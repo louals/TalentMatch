@@ -1,0 +1,10 @@
+{
+  "extends": "@react-native/typescript-config",
+  "compilerOptions": {
+    "jsx": "react-native",            
+    "baseUrl": "./src",
+    "paths": {
+      "api": ["api/api"]
+    }
+  }
+}

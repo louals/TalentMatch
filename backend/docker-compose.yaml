@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: louai
+      POSTGRES_PASSWORD: louai
+      POSTGRES_DB: JobMatchingDB
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  mongodb:
+    image: mongo:6
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db
+
+  backend:
+    build: .
+    depends_on:
+      - postgres
+      - mongodb
+    environment:
+      - POSTGRESQL_URL=postgresql+asyncpg://louai:louai@postgres:5432/JobMatchingDB
+      - MONGODB_URL=mongodb://mongodb:27017/JobMatchingDB
+    ports:
+      - "8000:8000"
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    volumes:
+      - .:/app
+
+volumes:
+  pgdata:
+  mongodata:
